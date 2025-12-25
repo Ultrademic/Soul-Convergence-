@@ -200,10 +200,11 @@ const BattleArena: React.FC<BattleArenaProps> = ({ playerVessel, playerSkills, p
     return () => clearInterval(timer);
   }, [player, opponent, battleOver, battleSpeed]);
 
-  const skipBattle = () => {
-    // Fast forward logic simplified for proto: insta-win if significantly more powerful or just exit
+  const handleFinish = () => {
     onFinish(player.currentStats.hp > 0 ? player.vessel.name : opponent.vessel.name);
   };
+
+  const isPlayerWinner = player.currentStats.hp > 0;
 
   return (
     <div className="max-w-4xl mx-auto p-4 bg-white rounded-[3rem] shadow-2xl border-8 border-orange-100 paper-texture overflow-hidden">
@@ -215,7 +216,7 @@ const BattleArena: React.FC<BattleArenaProps> = ({ playerVessel, playerSkills, p
         <div className="flex items-center space-x-4">
           <button onClick={() => setBattleSpeed(1)} className={`px-3 py-1 rounded-full text-[10px] font-black ${battleSpeed === 1 ? 'bg-orange-500 text-white' : 'bg-gray-100 text-gray-400'}`}>1X</button>
           <button onClick={() => setBattleSpeed(2)} className={`px-3 py-1 rounded-full text-[10px] font-black ${battleSpeed === 2 ? 'bg-orange-500 text-white' : 'bg-gray-100 text-gray-400'}`}>2X</button>
-          <button onClick={skipBattle} className="px-3 py-1 rounded-full text-[10px] font-black bg-gray-800 text-white hover:bg-black">SKIP</button>
+          <button onClick={handleFinish} className="px-3 py-1 rounded-full text-[10px] font-black bg-gray-800 text-white hover:bg-black">SKIP</button>
         </div>
       </div>
 
@@ -237,7 +238,7 @@ const BattleArena: React.FC<BattleArenaProps> = ({ playerVessel, playerSkills, p
           <div className="mt-6 w-40 h-5 bg-gray-800 rounded-full overflow-hidden border-2 border-white shadow-lg relative">
             <div className="h-full bg-gradient-to-r from-green-600 to-green-400 transition-all duration-300" style={{ width: `${(player.currentStats.hp/player.currentStats.maxHp)*100}%` }} />
             <div className="absolute inset-0 flex items-center justify-center text-[8px] font-black text-white drop-shadow-md">
-                {Math.max(0, player.currentStats.hp)} / {player.currentStats.maxHp}
+                {Math.max(0, Math.floor(player.currentStats.hp))} / {player.currentStats.maxHp}
             </div>
           </div>
           
@@ -300,10 +301,10 @@ const BattleArena: React.FC<BattleArenaProps> = ({ playerVessel, playerSkills, p
       <div className="flex justify-center pb-4">
         {battleOver ? (
           <button 
-            onClick={() => onFinish(player.currentStats.hp > 0 ? player.vessel.name : opponent.vessel.name)} 
-            className="bubbly-btn bg-orange-500 text-white font-game py-5 px-16 rounded-full text-3xl shadow-[0_8px_0_rgb(194,65,12)] active:shadow-none"
+            onClick={handleFinish} 
+            className={`bubbly-btn ${isPlayerWinner ? 'bg-orange-500 shadow-[0_8px_0_rgb(194,65,12)]' : 'bg-red-600 shadow-[0_8px_0_rgb(153,27,27)]'} text-white font-game py-5 px-16 rounded-full text-3xl active:shadow-none`}
           >
-            VICTORY SETTLED
+            {isPlayerWinner ? 'VICTORY SETTLED' : 'DEFEAT...'}
           </button>
         ) : (
           <div className="flex flex-col items-center">

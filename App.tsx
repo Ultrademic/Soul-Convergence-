@@ -20,7 +20,7 @@ const App: React.FC = () => {
 
   const [view, setView] = useState<'hub' | 'vessels' | 'skills' | 'battle' | 'forge' | 'tower' | 'pets' | 'world'>('hub');
   const [activeTab, setActiveTab] = useState<SkillCategory | 'All'>('All');
-  const [practiceMode, setPracticeMode] = useState(false);
+  const [battleSource, setBattleSource] = useState<'arena' | 'tower' | 'practice' | 'world'>('arena');
 
   const activeVessel = gameState.playerVessels.find(v => v.id === gameState.activeVesselId)!;
   const equippedSkillsData = SKILLS.filter(s => gameState.equippedSkills.includes(s.id));
@@ -41,8 +41,7 @@ const App: React.FC = () => {
   }
 
   const handleBattleFinish = (winnerName: string) => {
-    if (practiceMode) {
-        setPracticeMode(false);
+    if (battleSource === 'practice') {
         setView('skills');
         return;
     }
@@ -53,11 +52,18 @@ const App: React.FC = () => {
         if (isPlayerWin) {
             newState.gold += 250;
             newState.essenceShards += 10;
-            if (view === 'tower') newState.towerFloor += 1;
+            if (battleSource === 'tower') {
+                newState.towerFloor += 1;
+            }
         }
         return newState;
     });
     setView('hub');
+  };
+
+  const startBattle = (source: 'arena' | 'tower' | 'practice' | 'world') => {
+    setBattleSource(source);
+    setView('battle');
   };
 
   const synthesize = (type: 'Vessel' | 'Gear') => {
@@ -142,7 +148,7 @@ const App: React.FC = () => {
               ))}
             </div>
             
-            <button onClick={() => setView('battle')} className="bubbly-btn w-full mt-12 bg-red-500 text-white font-game text-4xl py-8 rounded-[3rem] shadow-[0_12px_0_rgb(185,28,28)] active:shadow-none hover:bg-red-600 transition-all flex items-center justify-center space-x-4">
+            <button onClick={() => startBattle('arena')} className="bubbly-btn w-full mt-12 bg-red-500 text-white font-game text-4xl py-8 rounded-[3rem] shadow-[0_12px_0_rgb(185,28,28)] active:shadow-none hover:bg-red-600 transition-all flex items-center justify-center space-x-4">
                <span>ENTER THE ARENA</span>
             </button>
           </div>
@@ -205,10 +211,7 @@ const App: React.FC = () => {
                         key={idx} 
                         className="absolute biome-node cursor-pointer flex flex-col items-center" 
                         style={{ top: biome.top, left: biome.left }}
-                        onClick={() => {
-                            setPracticeMode(false);
-                            setView('battle');
-                        }}
+                        onClick={() => startBattle('world')}
                     >
                         <div className="text-6xl mb-2 drop-shadow-xl hover:drop-shadow-2xl transition-all relative group">
                             {biome.icon}
@@ -235,7 +238,7 @@ const App: React.FC = () => {
             </div>
             <div className="flex space-x-4">
                 <button 
-                    onClick={() => { setPracticeMode(true); setView('battle'); }} 
+                    onClick={() => startBattle('practice')} 
                     className="bubbly-btn bg-cyan-100 text-cyan-600 font-game px-8 py-4 rounded-full border-4 border-cyan-200 text-xl"
                 >
                     PRACTICE DUMMY
@@ -391,8 +394,8 @@ const App: React.FC = () => {
                 playerVessel={activeVessel} 
                 playerSkills={equippedSkillsData} 
                 playerPet={activePet} 
-                isTowerMode={view === 'tower'}
-                isPracticeMode={practiceMode}
+                isTowerMode={battleSource === 'tower'}
+                isPracticeMode={battleSource === 'practice'}
                 floor={gameState.towerFloor}
                 onFinish={handleBattleFinish} 
             />
@@ -428,7 +431,7 @@ const App: React.FC = () => {
             </div>
             
             <button 
-                onClick={() => setView('battle')} 
+                onClick={() => startBattle('tower')} 
                 className="bubbly-btn w-full bg-orange-600 text-white font-game text-5xl py-12 rounded-[4rem] shadow-[0_15px_0_rgb(154,52,18)] active:shadow-none hover:bg-orange-500 hover:scale-[1.02] transition-all relative z-10 uppercase tracking-widest"
             >
                 CHALLENGE BOSS
