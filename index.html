@@ -4,58 +4,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Soul Convergence: The Vessel Chronicles</title>
+    <title>Ninja Nexus</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary-glow: rgba(249, 115, 22, 0.4);
+            --secondary-glow: rgba(6, 182, 212, 0.4);
+        }
         body {
             font-family: 'Nunito', sans-serif;
-            background: #fdf5e6;
+            background: #0f172a; /* Deep slate background for professional contrast */
             margin: 0;
             overflow-x: hidden;
+            color: #f8fafc;
         }
         .font-game {
             font-family: 'Luckiest Guy', cursive;
+            letter-spacing: 0.05em;
         }
-        .paper-texture {
-            background-image: url('https://www.transparenttextures.com/patterns/paper-fibers.png');
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-4px);
+            border-color: rgba(249, 115, 22, 0.5);
         }
         .bubbly-btn {
-            transition: transform 0.1s ease-in-out;
-            box-shadow: 0 4px 0 rgba(0,0,0,0.2);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .bubbly-btn:active {
-            transform: translateY(2px);
-            box-shadow: 0 2px 0 rgba(0,0,0,0.2);
+            transform: scale(0.95);
         }
         @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(1deg); }
         }
         .animate-float {
-            animation: float 3s ease-in-out infinite;
+            animation: float 4s ease-in-out infinite;
         }
         .custom-scrollbar::-webkit-scrollbar {
-            width: 6px;
+            width: 4px;
         }
         .custom-scrollbar::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
+            background: rgba(255,255,255,0.05);
         }
         .custom-scrollbar::-webkit-scrollbar-thumb {
             background: #fb923c;
             border-radius: 10px;
         }
-        .radar-stat {
-            stroke-dasharray: 100;
-            transition: stroke-dashoffset 1s ease-out;
+        .studio-text {
+            background: linear-gradient(to right, #94a3b8, #f8fafc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 900;
+            letter-spacing: 0.2em;
         }
-        .biome-node {
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        .hologram-effect {
+            position: relative;
         }
-        .biome-node:hover {
-            transform: scale(1.2) rotate(5deg);
+        .hologram-effect::after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 20px;
+            background: radial-gradient(ellipse at center, rgba(6, 182, 212, 0.4) 0%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(5px);
         }
     </style>
 <script type="importmap">
@@ -69,7 +97,7 @@
 }
 </script>
 </head>
-<body class="paper-texture">
+<body>
     <div id="root"></div>
 </body>
 </html>

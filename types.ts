@@ -28,6 +28,12 @@ export enum SkillType {
   COUNTER = 'Counter'
 }
 
+export enum WeaponType {
+  SHARP = 'Sharp',
+  BLUNT = 'Blunt',
+  FISTS = 'Fists'
+}
+
 export interface Skill {
   id: string;
   name: string;
@@ -60,9 +66,11 @@ export interface Vessel {
   name: string;
   title: string;
   element: ElementType;
+  weaponType: WeaponType;
   rarity: 'Common' | 'Rare' | 'Epic' | 'Legendary';
   baseStats: Stats;
   avatar: string;
+  recoveryEndTime?: number; // Timestamp when recovery completes
 }
 
 export interface Pet {
@@ -81,10 +89,17 @@ export interface StatusEffect {
   magnitude?: number;
 }
 
+export interface TowerModifier {
+  name: string;
+  description: string;
+  effect: 'atk_up' | 'def_up' | 'mana_drain' | 'fire_boost' | 'lightning_boost' | 'heal_on_turn' | 'none';
+  magnitude: number;
+}
+
 export interface BattleUnit {
   vessel: Vessel;
   currentStats: Stats;
-  skills: Skill[]; // This is the "Battle Belt" (Max 6)
+  skills: Skill[]; 
   pet?: Pet;
   statusEffects: StatusEffect[];
   gauge: number;
@@ -97,6 +112,8 @@ export interface BattleLog {
 }
 
 export interface GameState {
+  playerName: string;
+  village: ElementType | null;
   playerVessels: Vessel[];
   activeVesselId: string;
   equippedSkills: string[];
@@ -105,5 +122,15 @@ export interface GameState {
   diamonds: number;
   alchemyDust: number;
   towerFloor: number;
+  towerRoom: number;
+  consecutiveTowerLosses: number;
   essenceShards: number;
+  aetherCrystals: number;
+  dailyTrainingSessions: number;
+  maxDailyTraining: number;
+  stats: {
+    dailyWins: number;
+    dailyLosses: number;
+    totalBattles: number;
+  };
 }

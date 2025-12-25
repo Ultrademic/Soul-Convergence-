@@ -1,5 +1,4 @@
-
-import { ElementType, SkillType, SkillCategory, Skill, Vessel, Stats, Pet } from './types';
+import { ElementType, SkillType, SkillCategory, Skill, Vessel, Stats, Pet, WeaponType, TowerModifier } from './types';
 
 const calcStats = (str: number, agi: number, sta: number): Stats => ({
   hp: Math.floor(25000 / sta),
@@ -15,6 +14,14 @@ const calcStats = (str: number, agi: number, sta: number): Stats => ({
   res: 10,
   armorBreak: 10
 });
+
+export const TOWER_MODIFIERS: TowerModifier[] = [
+  { name: 'Gale Force', description: 'Action speed is increased by 20%.', effect: 'atk_up', magnitude: 0.2 },
+  { name: 'Solid Granite', description: 'Incoming physical damage reduced by 25%.', effect: 'def_up', magnitude: 0.25 },
+  { name: 'Magma Surge', description: 'Fire skills deal 40% more damage.', effect: 'fire_boost', magnitude: 0.4 },
+  { name: 'Static Discharge', description: 'Lightning skills deal 50% more damage.', effect: 'lightning_boost', magnitude: 0.5 },
+  { name: 'Chrono Rift', description: 'Healing effects are enhanced by 30%.', effect: 'heal_on_turn', magnitude: 0.3 }
+];
 
 export const SKILLS: Skill[] = [
   // Pyromancy
@@ -57,9 +64,9 @@ export const PETS: Pet[] = [
 ];
 
 export const INITIAL_VESSELS: Vessel[] = [
-  { id: 'ignis', name: 'Ignis', title: 'Cinder Acrobat', element: ElementType.FIRE, rarity: 'Rare', avatar: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=200&h=200&fit=crop', baseStats: calcStats(16, 10, 18) },
-  { id: 'raijin', name: 'Raijin-01', title: 'Lightning Prototype', element: ElementType.LIGHTNING, rarity: 'Legendary', avatar: 'https://images.unsplash.com/photo-1546776310-eef45dd6d63c?w=200&h=200&fit=crop', baseStats: calcStats(17, 9, 22) },
-  { id: 'golem', name: 'Golem-heart', title: 'Stone Bulwark', element: ElementType.EARTH, rarity: 'Epic', avatar: 'https://images.unsplash.com/photo-1502134249126-9f3755a50d78?w=200&h=200&fit=crop', baseStats: calcStats(18, 22, 8) },
-  { id: 'jinn', name: 'Ash-Walker Jinn', title: 'Glass Cannon', element: ElementType.FIRE, rarity: 'Legendary', avatar: 'https://images.unsplash.com/photo-1464802686167-b939a67e0621?w=200&h=200&fit=crop', baseStats: calcStats(9, 16, 24) },
-  { id: 'zephyr', name: 'Zephyr', title: 'Sky-Reaper', element: ElementType.WIND, rarity: 'Epic', avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=200&h=200&fit=crop', baseStats: calcStats(14, 11, 20) }
+  { id: 'ignis', name: 'Ignis', title: 'Cinder Acrobat', element: ElementType.FIRE, weaponType: WeaponType.FISTS, rarity: 'Rare', avatar: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=200&h=200&fit=crop', baseStats: calcStats(16, 10, 18) },
+  { id: 'raijin', name: 'Raijin-01', title: 'Lightning Prototype', element: ElementType.LIGHTNING, weaponType: WeaponType.SHARP, rarity: 'Legendary', avatar: 'https://images.unsplash.com/photo-1546776310-eef45dd6d63c?w=200&h=200&fit=crop', baseStats: calcStats(17, 9, 22) },
+  { id: 'golem', name: 'Golem-heart', title: 'Stone Bulwark', element: ElementType.EARTH, weaponType: WeaponType.BLUNT, rarity: 'Epic', avatar: 'https://i.postimg.cc/Kvxfy8vq/golem.png', baseStats: calcStats(18, 22, 8) },
+  { id: 'jinn', name: 'Ash-Walker Jinn', title: 'Glass Cannon', element: ElementType.FIRE, weaponType: WeaponType.SHARP, rarity: 'Legendary', avatar: 'https://images.unsplash.com/photo-1464802686167-b939a67e0621?w=200&h=200&fit=crop', baseStats: calcStats(9, 16, 24) },
+  { id: 'zephyr', name: 'Zephyr', title: 'Sky-Reaper', element: ElementType.WIND, weaponType: WeaponType.FISTS, rarity: 'Epic', avatar: 'https://i.postimg.cc/PqjrS9MD/zephyr.png', baseStats: calcStats(14, 11, 20) }
 ];

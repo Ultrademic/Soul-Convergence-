@@ -1,31 +1,27 @@
 
 import React from 'react';
-import { Vessel, ElementType } from '../types';
+import { Vessel, ElementType, WeaponType } from '../types';
 
 interface VesselCardProps {
   vessel: Vessel;
   isSelected?: boolean;
+  currentTime?: number;
   onClick?: () => void;
 }
 
-const VesselCard: React.FC<VesselCardProps> = ({ vessel, isSelected, onClick }) => {
-  const rarityColors = {
-    Common: 'border-gray-300 bg-gray-50',
-    Rare: 'border-blue-400 bg-blue-50',
-    Epic: 'border-purple-400 bg-purple-50',
-    Legendary: 'border-yellow-400 bg-yellow-50',
+const VesselCard: React.FC<VesselCardProps> = ({ vessel, isSelected, currentTime = Date.now(), onClick }) => {
+  const elementIcons: Record<ElementType, string> = {
+    [ElementType.FIRE]: '🔥',
+    [ElementType.WATER]: '💧',
+    [ElementType.WIND]: '🌪️',
+    [ElementType.LIGHTNING]: '⚡',
+    [ElementType.EARTH]: '⛰️',
   };
 
-  const elementColors: Record<ElementType, string> = {
-    [ElementType.FIRE]: 'bg-red-100 text-red-600',
-    [ElementType.WATER]: 'bg-blue-100 text-blue-600',
-    [ElementType.WIND]: 'bg-sky-100 text-sky-600',
-    [ElementType.LIGHTNING]: 'bg-yellow-100 text-yellow-600',
-    [ElementType.EARTH]: 'bg-emerald-100 text-emerald-600',
-  };
+  const isRecovering = vessel.recoveryEndTime && vessel.recoveryEndTime > currentTime;
+  const recoveryRemaining = isRecovering ? Math.ceil((vessel.recoveryEndTime! - currentTime) / 1000) : 0;
 
-  // Simplified radar logic: Strength, Agility, Stamina
-  const maxAtk = 250; // Approximated
+  const maxAtk = 250; 
   const maxSpd = 200;
   const maxHp = 3500;
 
@@ -36,43 +32,46 @@ const VesselCard: React.FC<VesselCardProps> = ({ vessel, isSelected, onClick }) 
   return (
     <div 
       onClick={onClick}
-      className={`relative cursor-pointer rounded-3xl border-4 p-4 transition-all transform hover:scale-105 active:scale-95 ${rarityColors[vessel.rarity]} ${isSelected ? 'ring-4 ring-orange-500 shadow-2xl scale-105 z-10' : 'shadow-md opacity-90'}`}
+      className={`glass-card relative cursor-pointer rounded-[2.5rem] p-6 text-center border-2 transition-all group ${isSelected ? 'border-orange-500 bg-orange-500/10 scale-105 z-10' : 'border-white/5 shadow-xl'} ${isRecovering ? 'opacity-80' : ''}`}
     >
-      <div className="flex flex-col items-center">
-        <div className="relative mb-3">
-          <img src={vessel.avatar} alt={vessel.name} className="w-24 h-24 rounded-full border-4 border-white shadow-lg object-cover" />
-          <div className={`absolute -bottom-1 -right-1 w-10 h-10 rounded-full border-4 border-white flex items-center justify-center text-sm font-black ${elementColors[vessel.element]} shadow-lg`}>
-            {vessel.element[0]}
+      <div className="relative mb-6">
+        <div className={`absolute inset-0 bg-orange-500/20 rounded-full blur-2xl group-hover:bg-orange-500/30 transition-all opacity-0 group-hover:opacity-100 ${isRecovering ? 'hidden' : ''}`}></div>
+        <img src={vessel.avatar} alt={vessel.name} className={`w-28 h-28 rounded-full border-4 border-white/10 shadow-2xl object-cover relative z-10 mx-auto transition-all ${isRecovering ? 'grayscale brightness-50' : ''}`} />
+        <div className="absolute -bottom-2 -right-2 w-10 h-10 glass-panel rounded-full flex items-center justify-center text-lg z-20 border-white/20">
+          {elementIcons[vessel.element]}
+        </div>
+        
+        {isRecovering && (
+            <div className="absolute inset-0 flex items-center justify-center z-20 flex-col">
+                <span className="text-white font-game text-2xl drop-shadow-lg">EXHAUSTED</span>
+                <span className="text-orange-500 font-black text-sm mt-1">{recoveryRemaining}s</span>
+            </div>
+        )}
+      </div>
+      
+      <h3 className={`font-game text-2xl mb-1 transition-colors uppercase ${isRecovering ? 'text-slate-500' : 'text-white group-hover:text-orange-400'}`}>{vessel.name}</h3>
+      <p className="text-[8px] font-black text-slate-500 uppercase tracking-[0.2em] mb-6">{vessel.title}</p>
+      
+      <div className="space-y-3 px-2">
+          <div className="relative h-1.5 bg-white/5 rounded-full overflow-hidden">
+              <div className="h-full bg-red-500/70" style={{ width: `${str}%` }}></div>
           </div>
-        </div>
-        
-        <h3 className="font-game text-xl text-gray-800 leading-none mb-1">{vessel.name}</h3>
-        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">{vessel.title}</p>
-        
-        {/* Visual Stats Bar */}
-        <div className="w-full space-y-1.5 px-2">
-            <div className="w-full h-1 bg-gray-200 rounded-full overflow-hidden">
-                <div className="h-full bg-red-400 transition-all duration-1000" style={{ width: `${str}%` }}></div>
-            </div>
-            <div className="w-full h-1 bg-gray-200 rounded-full overflow-hidden">
-                <div className="h-full bg-cyan-400 transition-all duration-1000" style={{ width: `${agi}%` }}></div>
-            </div>
-            <div className="w-full h-1 bg-gray-200 rounded-full overflow-hidden">
-                <div className="h-full bg-orange-400 transition-all duration-1000" style={{ width: `${sta}%` }}></div>
-            </div>
-        </div>
+          <div className="relative h-1.5 bg-white/5 rounded-full overflow-hidden">
+              <div className="h-full bg-cyan-500/70" style={{ width: `${agi}%` }}></div>
+          </div>
+          <div className="relative h-1.5 bg-white/5 rounded-full overflow-hidden">
+              <div className="h-full bg-green-500/70" style={{ width: `${sta}%` }}></div>
+          </div>
+      </div>
 
-        <div className="mt-3 flex justify-between w-full text-[8px] font-black text-gray-400 uppercase">
-            <span>STR</span>
-            <span>AGI</span>
-            <span>STA</span>
-        </div>
+      <div className="mt-4 flex justify-between text-[7px] font-black text-slate-600 uppercase tracking-tighter">
+          <span>STR</span>
+          <span>AGI</span>
+          <span>STA</span>
       </div>
       
       {vessel.rarity === 'Legendary' && (
-        <div className="absolute -top-3 -right-3 bg-gradient-to-tr from-yellow-600 to-yellow-300 text-white text-[9px] px-3 py-1.5 rounded-full animate-pulse shadow-lg font-black tracking-tighter ring-2 ring-white">
-          LEGENDARY
-        </div>
+        <div className="absolute top-4 left-4 text-[7px] bg-orange-500 text-white font-black px-2 py-1 rounded-md tracking-widest shadow-lg">LEGENDARY</div>
       )}
     </div>
   );
